@@ -1,6 +1,6 @@
 import { ListDto } from 'src/grocery/dto/ListDto';
 import { ProductDto } from 'src/grocery/dto/ProductDto';
-import { List } from 'src/grocery/entity/List';
+import { List } from 'src/grocery/file-entity/List';
 
 const enter = /\r?\n/;
 const isOnlyDigits = /^\d+$/;

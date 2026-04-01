@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { List } from 'src/grocery/entity/List';
+import { List } from 'src/grocery/file-entity/List';
 import { getFilePath, LISTS_DIR } from '../constants';
 import * as fs from 'fs/promises';
 import { checkValidDate, isCorrectDate, sortAscend } from '../utils/DateUtils';
