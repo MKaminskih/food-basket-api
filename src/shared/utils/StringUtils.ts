@@ -1,5 +1,5 @@
 import { ListDto } from 'src/grocery/dto/ListDto';
-import { ProductDto } from 'src/grocery/dto/ProductDto';
+import { ListProductDto } from 'src/grocery/dto/ListProductDto';
 import { List } from 'src/grocery/file-entity/List';
 
 const enter = /\r?\n/;
@@ -21,12 +21,17 @@ const validateLine = (line: string): boolean => {
     return line !== separator && validLine.test(line) && !isOnlyDigits.test(line);
 };
 
-function toProductDto(line: string): ProductDto {
+function toProductDto(line: string): ListProductDto {
     if (validLineWithCount.test(line)) {
         const list = line.split(' (');
-        return new ProductDto(list[0], parseNum(list[1].substring(0, list[1].length - 1), 1));
+        return new ListProductDto(
+            '',
+            list[0],
+            undefined,
+            parseNum(list[1].substring(0, list[1].length - 1), 1),
+        );
     } else {
-        return new ProductDto(line, 1);
+        return new ListProductDto('', line, undefined, 1);
     }
 }
 
@@ -59,6 +64,6 @@ function parseNum(num: string | undefined, defaultNum: number = 0): number {
     }
 }
 
-function productToStr(product: ProductDto): string {
+function productToStr(product: ListProductDto): string {
     return `${product.name} (${product.count})`;
 }

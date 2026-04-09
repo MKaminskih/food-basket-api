@@ -15,14 +15,33 @@ export class GroceryController {
 
     @Get('list/:date')
     async getList(@Param('date') date: string) {
-        return await this.groceryService.getList(date);
+        const list = await this.groceryService.getList(date);
+        if (list === null) {
+            return {
+                message: `Не удалось найти список продуктов в ${date}`,
+            };
+        } else {
+            return list;
+        }
+    }
+
+    @Get('products')
+    async getAllProducts() {
+        return await this.groceryService.getAllProducts();
     }
 
     @Post('list')
     async createList(@Body() list: ListDto) {
-        await this.groceryService.createList(list);
-        return {
-            message: `Список продуктов в ${list.date} успешно создан`,
-        };
+        try {
+            await this.groceryService.createList(list);
+            return {
+                message: `Список продуктов в ${list.date} успешно создан`,
+            };
+        } catch (error) {
+            console.log(error);
+            return {
+                message: `Не удалось создать cписок продуктов в ${list.date}`,
+            };
+        }
     }
 }

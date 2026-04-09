@@ -33,17 +33,34 @@ export const sortAscend = (date1: string, date2: string) => {
 
 /**
  * Проверяет валидность даты и приводит к единому формату ДД-ММ-ГГГГ
- * @param date - строка с датой в одном из поддерживаемых форматов
+ * @param date - строка с датой в одном из поддерживаемых форматов или дата
  * @returns строку даты в формате ДД-ММ-ГГГГ
  * @throws ошибку с текстом 'Введена некорректная дата' если дата невалидна
  */
-export function checkValidDate(date: string): string {
+export function checkValidDate(date: string | Date): string {
     if (isDate(date)) return format(date, fileNameFormat);
 
     for (const fmt of formats) {
         const dateValue = parse(date, fmt, baseDate);
         if (isValid(dateValue)) {
             return format(dateValue, fileNameFormat);
+        }
+    }
+
+    throw new Error('Введена некорректная дата');
+}
+
+/**
+ * Проверяет валидность даты и приводит к единому формату ДД-ММ-ГГГГ
+ * @param date - строка с датой в одном из поддерживаемых форматов
+ * @returns строку даты в формате ДД-ММ-ГГГГ
+ * @throws ошибку с текстом 'Введена некорректная дата' если дата невалидна
+ */
+export function toDate(date: string): Date {
+    for (const fmt of formats) {
+        const dateValue = parse(date, fmt, baseDate);
+        if (isValid(dateValue)) {
+            return dateValue;
         }
     }
 

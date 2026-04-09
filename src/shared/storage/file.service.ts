@@ -6,8 +6,6 @@ import { checkValidDate, isCorrectDate, sortAscend } from '../utils/DateUtils';
 
 @Injectable()
 export class FileService {
-    private listOfProducts: Map<string, List> = new Map();
-
     async getList(date: string): Promise<List> {
         const validDate = checkValidDate(date);
         const filePath = getFilePath(`${validDate}.txt`);
