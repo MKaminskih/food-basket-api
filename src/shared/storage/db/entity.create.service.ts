@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { ListProduct } from 'src/grocery/entity/list-product.entity';
 import { List } from 'src/grocery/entity/list.entity';
 import { Product } from 'src/grocery/entity/product.entity';
@@ -7,12 +7,12 @@ import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class EntityCreateService {
-    constructor() {}
+    private readonly logger = new Logger(EntityCreateService.name);
 
     async createList(date: Date, manager: EntityManager): Promise<List> {
         const list = manager.create(List, { date });
         const created = await manager.save(List, list);
-        console.log(`created list = ${listToString(created)}`);
+        this.logger.debug(`created list = ${listToString(created)}`);
         return created;
     }
 
@@ -23,7 +23,7 @@ export class EntityCreateService {
     ): Promise<Product> {
         const newProduct = manager.create(Product, { name, size });
         const createdProduct = await manager.save(Product, newProduct);
-        console.log(`created product = ${productToString(createdProduct)}`);
+        this.logger.debug(`created product = ${productToString(createdProduct)}`);
         return createdProduct;
     }
 
@@ -39,7 +39,7 @@ export class EntityCreateService {
             product_count,
         });
         const created = await manager.save(ListProduct, listProduct);
-        console.log(`create lp ${listProductToString(created)}`);
+        this.logger.debug(`create lp ${listProductToString(created)}`);
         return created;
     }
 }

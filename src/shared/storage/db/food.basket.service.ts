@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectEntityManager, InjectRepository } from '@nestjs/typeorm';
 import { ListProduct } from 'src/grocery/entity/list-product.entity';
 import { List } from 'src/grocery/entity/list.entity';
@@ -9,6 +9,8 @@ import { EntityCreateService } from './entity.create.service';
 
 @Injectable()
 export class FoodBasketService {
+    private readonly logger = new Logger(FoodBasketService.name);
+
     constructor(
         @InjectRepository(List) private listRepo: Repository<List>,
         @InjectRepository(Product) private productRepo: Repository<Product>,
@@ -41,7 +43,7 @@ export class FoodBasketService {
         return await this.entityManager.transaction(async (manager) => {
             const listId = (await this.entityCreateService.createList(date, manager)).id;
             for (const listProduct of listProducts) {
-                console.log(`lp from request ${listProductToString(listProduct)}`);
+                this.logger.debug(`lp from request ${listProductToString(listProduct)}`);
                 const productId = await this.getOrCreateProductId(listProduct.product, manager);
                 await this.entityCreateService.createListProduct(
                     listId,
@@ -56,7 +58,7 @@ export class FoodBasketService {
 
     async getOrCreateProductId(product: Product, manager: EntityManager): Promise<string> {
         if (product.id !== '') return product.id;
-        if (product.name !== '') throw new Error('Некорректное название продукта для сохранения');
+        if (product.name === '') throw new Error('Некорректное название продукта для сохранения');
         const existed = await manager.findOne(Product, {
             where: { name: product.name, size: product.size },
         });

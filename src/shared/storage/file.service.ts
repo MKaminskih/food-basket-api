@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { List } from 'src/grocery/file-entity/List';
 import { getFilePath, LISTS_DIR } from '../constants';
 import * as fs from 'fs/promises';
@@ -6,6 +6,8 @@ import { checkValidDate, isCorrectDate, sortAscend } from '../utils/DateUtils';
 
 @Injectable()
 export class FileService {
+    private readonly logger = new Logger(FileService.name);
+
     async getList(date: string): Promise<List> {
         const validDate = checkValidDate(date);
         const filePath = getFilePath(`${validDate}.txt`);
@@ -58,7 +60,7 @@ export class FileService {
             await fs.writeFile(filePath, content);
             return;
         } catch (error) {
-            console.log(`Во время создания файла ${date + '.txt'} произошла ошибка`);
+            this.logger.log(`Во время создания файла ${date + '.txt'} произошла ошибка`);
             throw error;
         }
     }

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { toDate } from 'src/shared/utils/DateUtils';
 import { ListDto } from './dto/ListDto';
 import { GroceryMapper } from './mapper/GroceryMapper';
@@ -8,6 +8,8 @@ import { listProductToString } from 'src/shared/constants';
 
 @Injectable()
 export class GroceryService {
+    private readonly logger = new Logger(GroceryService.name);
+
     constructor(private readonly foodBasketService: FoodBasketService) {}
 
     async getList(date: string): Promise<ListDto | null> {
@@ -22,15 +24,14 @@ export class GroceryService {
             GroceryMapper.listProductToDao(listProduct, list),
         );
         const str = listProducts.map((lp) => listProductToString(lp)).join('/n');
-        console.log(`valid date ${validDate.toDateString()}, mapped lp ${str}`);
+        this.logger.debug(`valid date ${validDate.toDateString()}, mapped lp ${str}`);
         const listId = await this.foodBasketService.createNewList(validDate, listProducts);
-        console.log(`listId = ${listId}`);
+        this.logger.log(`listId = ${listId}`);
         return listId;
     }
 
     async getAllDates(): Promise<Date[]> {
         const lists = await this.foodBasketService.getAllLists();
-        console.log(lists);
         return lists.map((list) => list.date);
     }
 
