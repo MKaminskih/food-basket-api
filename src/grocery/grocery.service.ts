@@ -16,7 +16,7 @@ export class GroceryService {
         return list === null ? null : GroceryMapper.listToDto(list);
     }
 
-    async createList(list: ListDto): Promise<void> {
+    async createList(list: ListDto): Promise<string> {
         const validDate = toDate(list.date);
         const listProducts = list.products.map((listProduct) =>
             GroceryMapper.listProductToDao(listProduct, list),
@@ -25,7 +25,7 @@ export class GroceryService {
         console.log(`valid date ${validDate.toDateString()}, mapped lp ${str}`);
         const listId = await this.foodBasketService.createNewList(validDate, listProducts);
         console.log(`listId = ${listId}`);
-        return;
+        return listId;
     }
 
     async getAllDates(): Promise<Date[]> {

@@ -56,6 +56,7 @@ export class FoodBasketService {
 
     async getOrCreateProductId(product: Product, manager: EntityManager): Promise<string> {
         if (product.id !== '') return product.id;
+        if (product.name !== '') throw new Error('Некорректное название продукта для сохранения');
         const existed = await manager.findOne(Product, {
             where: { name: product.name, size: product.size },
         });
